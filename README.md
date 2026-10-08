@@ -7,9 +7,9 @@
 
 ## Тестовые юзеры (формат логин:пароль):
 
-- testuser:userpass
-- user:userpass
-- admin:adminpass
+- user1:userpass
+- user2:userpass
+- user3:userpass
 
 ## Возможности
 
