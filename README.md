@@ -2,6 +2,12 @@
 
 Веб-приложение для личного и совместного учета доходов и расходов. Стек: Django, Django REST Framework, PostgreSQL, Django templates, CSS и JavaScript.
 
+## Тестовые юзеры (формат логин:пароль):
+
+- testuser:userpass
+- user:userpass
+- фadmin:adminpass
+
 ## Возможности
 
 - Регистрация, вход и выход через Django-сессии; JWT endpoint доступен для клиентов API.
