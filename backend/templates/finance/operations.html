@@ -1,0 +1,97 @@
+{% extends 'finance/base.html' %}
+{% block title %}Операции{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Доходы и расходы</p>
+    <h1>Операции</h1>
+    <p class="muted">Записывайте движения денег и фильтруйте историю.</p>
+  </div>
+  <a class="button secondary" href="/api/operations/export-csv/">Экспорт CSV</a>
+</div>
+
+<section class="panel">
+  <h2>Добавить операцию</h2>
+  <form id="operation-form" class="form-grid">
+    <label class="form-field">Тип
+      <select class="form-control" name="type"><option value="EXPENSE">Расход</option><option value="INCOME">Доход</option></select>
+    </label>
+    <label class="form-field">Сумма
+      <input class="form-control" name="amount" type="number" min="0.01" step="0.01" required>
+    </label>
+    <label class="form-field">Дата
+      <input class="form-control" name="date" type="date" required>
+    </label>
+    <label class="form-field">Категория
+      <select class="form-control" name="category" id="category-select" required></select>
+    </label>
+    <label class="form-field">Группа (необязательно)
+      <select class="form-control" name="group" id="group-select"><option value="">Личная операция</option></select>
+    </label>
+    <label class="form-field wide">Описание
+      <input class="form-control" name="description" maxlength="1000">
+    </label>
+    <div class="form-actions"><button class="button primary">Сохранить операцию</button></div>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>Новая личная категория</h2>
+  <form id="category-form" class="form-row category-form">
+    <label class="form-field">Название
+      <input class="form-control" name="name" required maxlength="255">
+    </label>
+    <label class="form-field">Тип
+      <select class="form-control" name="type"><option value="EXPENSE">Расход</option><option value="INCOME">Доход</option></select>
+    </label>
+    <label class="form-field">Группа
+      <select class="form-control" name="group" id="category-group"><option value="">Личная категория</option></select>
+    </label>
+    <div class="form-actions"><button class="button secondary">Добавить категорию</button></div>
+  </form>
+</section>
+
+<section class="panel" id="categories-panel" data-current-user="{{ user.id }}">
+  <h2>Категории</h2>
+  <p class="muted">Редактировать и удалять категорию может её владелец. Категория, используемая в операциях, не удаляется.</p>
+  <p class="form-feedback" id="category-feedback" aria-live="polite"></p>
+  <div id="categories-list" class="category-list" aria-live="polite"><p class="muted">Загрузка…</p></div>
+</section>
+
+<section class="panel" id="operations-panel">
+  <div class="panel-heading">
+    <div><h2>История</h2><p class="muted">Уточните период, тип, группу или категорию.</p></div>
+    <form id="filter-form" class="filters">
+      <label class="form-field">Тип
+        <select class="form-control" name="type"><option value="">Любой тип</option><option value="INCOME">Доход</option><option value="EXPENSE">Расход</option></select>
+      </label>
+      <label class="form-field">Группа
+        <select class="form-control" name="group" id="filter-group"><option value="">Все группы</option></select>
+      </label>
+      <label class="form-field">Категория
+        <select class="form-control" name="category" id="filter-category"><option value="">Все категории</option></select>
+      </label>
+      <label class="form-field">С даты<input class="form-control" name="date_from" type="date"></label>
+      <label class="form-field">По дату<input class="form-control" name="date_to" type="date"></label>
+      <div class="form-actions"><button class="button secondary">Применить</button><button type="reset" class="button ghost">Сбросить</button></div>
+    </form>
+  </div>
+  <div class="table-wrap">
+    <table class="operations-table">
+      <thead><tr><th>Дата</th><th>Тип</th><th>Категория</th><th>Группа</th><th>Сумма</th><th>Описание</th><th>Действия</th></tr></thead>
+      <tbody id="operations-list"><tr><td colspan="7" class="muted">Загрузка…</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel csv-panel">
+  <h2>Импорт CSV</h2>
+  <p class="muted csv-help">Поддерживаются русский экспорт приложения и старый формат с заголовками date, type, amount, category, group, description. В русском формате категории и группы распознаются по названию.</p>
+  <form id="import-form" class="form-row" enctype="multipart/form-data">
+    <label class="form-field">CSV-файл
+      <input class="form-control file-control" type="file" name="file" accept=".csv,text/csv" required>
+    </label>
+    <div class="form-actions"><button class="button secondary">Импортировать</button></div>
+  </form>
+</section>
+{% endblock %}

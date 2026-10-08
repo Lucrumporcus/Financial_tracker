@@ -67,7 +67,12 @@ class GroupMembership(models.Model):
             models.UniqueConstraint(
                 fields=['user', 'group'],
                 name='unique_user_group_membership'
-            )
+            ),
+            models.UniqueConstraint(
+                fields=['group'],
+                condition=models.Q(role=GroupRole.OWNER),
+                name='unique_group_owner',
+            ),
         ]
 
     def __str__(self):

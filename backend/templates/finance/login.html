@@ -1,0 +1,3 @@
+{% extends 'finance/base.html' %}{% block title %}Вход{% endblock %}{% block content %}
+<section class="auth-card"><p class="eyebrow">Личный кабинет</p><h1>С возвращением</h1><p class="muted">Войдите, чтобы управлять финансами.</p>
+<form method="post" class="stack">{% csrf_token %}{{ form.as_p }}<button class="button primary">Войти</button></form><p>Нет аккаунта? <a href="{% url 'register_page' %}">Зарегистрироваться</a></p></section>{% endblock %}

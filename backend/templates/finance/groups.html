@@ -1,0 +1,28 @@
+{% extends 'finance/base.html' %}
+{% block title %}Группы{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Совместный учет</p>
+    <h1>Группы</h1>
+    <p class="muted">Добавляйте участников и назначайте им роли.</p>
+  </div>
+</div>
+
+<section class="panel">
+  <h2>Новая группа</h2>
+  <form id="group-form" class="form-row">
+    <label class="form-field">Название
+      <input class="form-control" name="name" required maxlength="255" placeholder="Например, Семейный бюджет">
+    </label>
+    <div class="form-actions"><button class="button primary">Создать группу</button></div>
+  </form>
+</section>
+
+<section class="panel" id="groups-panel" data-current-user="{{ user.id }}">
+  <h2>Ваши группы</h2>
+  <div id="groups-list" class="group-list" aria-live="polite">
+    <p class="muted">Загрузка…</p>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Финансы{% endblock %} · Финансовый трекер</title>
+  <link rel="stylesheet" href="{% static 'finance/css/app.css' %}">
+  <script defer src="{% static 'finance/js/app.js' %}"></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">Финансовый трекер</a>
+    {% if user.is_authenticated %}<nav><a href="{% url 'dashboard' %}">Обзор</a><a href="{% url 'groups_page' %}">Группы</a><a href="{% url 'operations_page' %}">Операции</a><a href="{% url 'statistics_page' %}">Статистика</a></nav><div class="user-menu">{{ user.username }} <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link-button">Выйти</button></form></div>{% endif %}
+  </header>
+  <main class="container">
+    <div id="app-notice" class="app-notice" role="status" aria-live="polite" hidden></div>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
