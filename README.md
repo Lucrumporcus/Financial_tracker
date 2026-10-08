@@ -2,11 +2,14 @@
 
 Веб-приложение для личного и совместного учета доходов и расходов. Стек: Django, Django REST Framework, PostgreSQL, Django templates, CSS и JavaScript.
 
+## Залитый на хостинг
+- https://financial-tracker-q1p9.onrender.com/
+
 ## Тестовые юзеры (формат логин:пароль):
 
 - testuser:userpass
 - user:userpass
-- фadmin:adminpass
+- admin:adminpass
 
 ## Возможности
 
