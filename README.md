@@ -11,39 +11,15 @@
 - Экспорт доступных операций в CSV и импорт с проверкой категории, группы и прав.
 - Страницы `/login/`, `/register/`, `/`, `/groups/`, `/operations/`, `/statistics/`.
 
-## Локальный запуск через Docker Compose
+## Структура проекта
 
-Нужны Docker Desktop и Docker Compose. Скопируйте `.env.example` в `.env` в корне проекта и при необходимости задайте локальный пароль:
-
-```dotenv
-POSTGRES_DB=financial_tracker
-POSTGRES_USER=financial_tracker
-POSTGRES_PASSWORD=change-me-for-local-use
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-DJANGO_SECRET_KEY=replace-with-a-long-random-value
-DJANGO_DEBUG=1
-DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,backend
-```
-
-Запуск и остановка:
-
-```sh
-docker compose up --build
-docker compose down
-```
-
-Откройте <http://localhost:8000/>. `docker compose down -v` удаляет локальный том PostgreSQL вместе с данными.
-
-## Размещение на Render
-
-В корне репозитория есть `render.yaml` для Blueprint. Он создаёт Python Web Service из `backend`: устанавливает `requirements.txt`, собирает статику, применяет миграции и запускает `config.wsgi:application` через Gunicorn. WhiteNoise отдаёт собранные статические файлы.
-
-Для Blueprint выберите New → Blueprint и подключите репозиторий. Render передаст внутренний `DATABASE_URL` и сгенерирует `DJANGO_SECRET_KEY`. `DJANGO_DEBUG=0` и `DJANGO_ALLOWED_HOSTS=.onrender.com` заданы в конфигурации; `RENDER_EXTERNAL_HOSTNAME` автоматически добавляется в `ALLOWED_HOSTS` и `CSRF_TRUSTED_ORIGINS`. При ручном создании Python Web Service задайте Root Directory `backend`, Build Command `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput`, Start Command `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2` и те же переменные окружения.
-
-Blueprint использует бесплатные планы для демо. У бесплатной Render PostgreSQL есть ограничения, включая срок хранения 30 дней; для длительного хранения данных выберите платный план базы перед созданием или обновите его в Render. Подробнее: <https://render.com/docs/free>.
-
-Переменные окружения Django: `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS`, `DATABASE_URL`. Для локального Compose также используются `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_HOST`, `POSTGRES_PORT` и `APP_PORT`.
+- `backend/config/` — настройки Django, корневые URL-маршруты и WSGI/ASGI-конфигурация.
+- `backend/finance/` — модели, API, сериализаторы, права доступа, веб-представления, тесты и миграции.
+- `backend/templates/finance/` — Django-шаблоны страниц приложения.
+- `backend/static/finance/` — общие CSS-стили и JavaScript.
+- `backend/manage.py` и `backend/requirements.txt` — управление Django-проектом и Python-зависимости.
+- `backend/Dockerfile` и `docker-compose.yml` — конфигурация контейнеров для локальной разработки.
+- `render.yaml` — конфигурация развертывания проекта на Render.
 
 ## API
 
@@ -56,14 +32,3 @@ Blueprint использует бесплатные планы для демо. 
 - Фильтры операций: `type`, `category`, `group`, `date_from`, `date_to`.
 
 В интерфейсе DRF использует Django-сессию и CSRF. Для внешнего клиента используйте JWT Bearer token.
-
-## Проверки
-
-```sh
-cd backend
-python manage.py check
-python manage.py makemigrations --check --dry-run
-python manage.py test finance
-```
-
-Для запуска тестов без PostgreSQL задайте `DJANGO_USE_SQLITE=1`. Приложение в обычном режиме использует PostgreSQL.
